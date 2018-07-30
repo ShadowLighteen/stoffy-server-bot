@@ -1,0 +1,12 @@
+{
+  "name": "stoffy-server-bot",
+  "description": "stoffy-server-bot",
+  "version": "1.0.0",
+  "main": "bot.js",
+  "scripts": {
+    "start": "node bot.js"
+  },
+  "dependencies": {
+    "discord.js": "11.3.0"
+  }
+}
