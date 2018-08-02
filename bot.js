@@ -3,10 +3,14 @@ const client = new Discord.Client();
 
 client.on('ready', () => {
   console.log('[SYSTEM] Успешная авторизация.');
+	client.user.setPresence({
+		game: `бубенчики | ${process.env.PREFIX}help`,
+		type: 2
+}).catch(console.log(`[ERROR] Ошибка установки статуса`));
 });
 
 client.on("guildMemberAdd", (member) => {
-  console.log(`New User "${member.user.username}" has joined "${member.guild.name}"` );
+  console.log(`"${member.user.username}" зашёл на сервер`);
   client.channels.get("474597789305929738").send(`"${member.user.username}" зашёл на сервер. Пожалуйста, понефрите.`);
 });
 
@@ -189,10 +193,36 @@ if (err) return message.reply("у Вас нету доступа для сове
   let member = message.mentions.members.first();
 let reason = args.slice(1).join(" ");
   member.kick(reason);
-  message.channel.send(`Успешно забанен пользователь ${member.tag} модератором ${message.author} | Причина: ${reason}`);
+  message.channel.send(`Успешно выгнан пользователь ${member.tag} модератором ${message.author} | Причина: ${reason}`);
+}
+	if(message.content === process.env.PREFIX + "silentban") {
+		let err = false;
+['BAN_MEMBERS'].forEach(function (item) {
+            if (!message.member.hasPermission(item, false, true, true)) {
+                err = true;
+            }
+        });
+if (err) return message.reply("у Вас нету доступа для совершения этого действия");
+  let member = message.mentions.members.first();
+  member.ban();
+  message.delete();
 }
 	
-	if(command === "say"){
+	if(message.content === process.env.PREFIX + "ban") {
+		let err = false;
+['BAN_MEMBERS'].forEach(function (item) {
+            if (!message.member.hasPermission(item, false, true, true)) {
+                err = true;
+            }
+        });
+if (err) return message.reply("у Вас нету доступа для совершения этого действия");
+  let member = message.mentions.members.first();
+let reason = args.slice(1).join(" ");
+  member.ban(reason);
+  message.channel.send(`Успешно заблокирован пользователь ${member.tag} модератором ${message.author} | Причина: ${reason}`);
+}
+	
+	if(message.content === process.env.PREFIX + "say"){
 		let err = false;
 ['ADMINISTRATOR'].forEach(function (item) {
             if (!message.member.hasPermission(item, false, true, true)) {
@@ -223,7 +253,47 @@ if (err) return message.reply("у Вас нету доступа для сове
             message.delete();
         }
 }
-
+	
+	if(message.content === process.env.PREFIX + "help") {
+    message.channel.send({embed: {
+	    title: `StoffyBOT`,
+	    description: `Есть три вида команды о помощи:\n\n${process.env.PREFIX}userhelp > Помощь по командам для обычного пользователя\n${process.env.PREFIX}modhelp > Помощь по командам для модератора\n${process.env.PREFIX}adminhelp > Помощь по командам для разработчика`
+}
+});
+	}
+	
+	if(message.content === process.env.PREFIX + "userhelp") {
+    message.author.send({embed: {
+	    title: `StoffyBOT > Помощь по командам для обычного пользователя`,
+	    description: `${process.env.PREFIX}russian > Выдаётся роль Russian\n${process.env.PREFIX}english > Выдаётся роль English`
+}
+});
+	}
+	
+	if(message.content === process.env.PREFIX + "modhelp") {
+		let err = false;
+['MANAGE_MESSAGES'].forEach(function (item) {
+            if (!message.member.hasPermission(item, false, true, true)) {
+                err = true;
+            }
+        });
+if (err) return message.reply("у Вас нету доступа для совершения этого действия");
+    message.author.send({embed: {
+	    title: `StoffyBOT > Помощь по командам для модератора`,
+	    description: `${process.env.PREFIX}kick [@упоминание] [причина] > Выгнать пользователя с сервера\n${process.env.PREFIX}silentkick [@упоминание] > Скрытно выгнать пользователя с сервера\n${process.env.PREFIX}ban [@упоминание] [причина] > Заблокировать пользователя на сервере\n${process.env.PREFIX}silentban [@упоминание] > Скрытно заблокировать пользователя на сервере\n${process.env.PREFIX}say [текст] > Сказать что-то от имени бота`
+}
+});
+	}
+	
+	if(message.content === process.env.PREFIX + "adminhelp") {
+		if(message.author.id !== "178404926869733376") return message.reply("у Вас нету доступа для совершения этого действия");
+    message.author.send({embed: {
+	    title: `StoffyBOT > Помощь по командам для разработчика`,
+	    description: `${process.env.PREFIX}eval [текст] > Эмулирование кода`
+}
+});
+	}
+	
 });
 
 client.login(process.env.BOT_TOKEN);
