@@ -30,16 +30,6 @@ client.on('messageDelete', async (message) => {
   logs.send(`Удалено сообщение в канале <#${message.channel.id}> пользователем ${user}`);
 });
 
-const talkedRecently = new Set();
-
-if (talkedRecently.has(message.author.id))
-  return;
-
-talkedRecently.add(message.author.id);
-setTimeout(() => {
-  talkedRecently.delete(message.author.id);
-}, 5000);
-
 function clean(text) {
   if (typeof(text) === "string")
     return text.replace(/`/g, "`" + String.fromCharCode(8203)).replace(/@/g, "@" + String.fromCharCode(8203));
