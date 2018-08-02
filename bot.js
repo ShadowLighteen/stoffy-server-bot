@@ -42,8 +42,6 @@ function clean(text) {
 }
 
 client.on("message", async message => {
-	const prefixMention = new RegExp(`^<@!?${client.user.id}> `);
-  process.env.PREFIX = prefixMention.match(message.content) ? message.content.match(prefixMention)[0] + " " : process.env.PREFIX;
   console.log(`[SPY] | #` + message.channel.name + ` | ` + message.author.tag + `: ` + message.content);
   
   if(message.author.bot) return;
