@@ -2,12 +2,36 @@ const Discord = require('discord.js');
 const client = new Discord.Client();
 
 client.on('ready', () => {
-  console.log('[SYSTEM] Успешная авторизация');
+  console.log('[SYSTEM] Успешная авторизация.');
+	client.user.setPresence({
+		game: `бубенчики | ${process.env.PREFIX}help`,
+		type: 2
+}).catch(console.log(`[ERROR] Ошибка установки статуса`));
 });
 
 client.on("guildMemberAdd", (member) => {
   console.log(`"${member.user.username}" зашёл на сервер`);
-  client.channels.get("456110637051936809").send(`"${member.user.username}" зашёл на сервер. Пожалуйста, понефрите.`);
+  client.channels.get("474597789305929738").send(`"${member.user.username}" зашёл на сервер. Пожалуйста, понефрите.`);
+});
+
+client.on('messageDelete', async (message) => {
+  const logs = message.guild.channels.find('name', 'logs');
+  if (message.guild.me.hasPermission('MANAGE_CHANNELS') && !logs) {
+    message.guild.createChannel('logs', 'text');
+  }
+  if (!message.guild.me.hasPermission('MANAGE_CHANNELS') && !logs) { 
+    console.log('The logs channel does not exist and tried to create the channel but I am lacking permissions')
+  }  
+  let user = ""
+    if (entry.extra.channel.id === message.channel.id
+      && (entry.target.id === message.author.id)
+      && (entry.createdTimestamp > (Date.now() - 5000))
+      && (entry.extra.count >= 1)) {
+    user = entry.executor.username
+  } else { 
+    user = message.author.username
+  }
+  logs.send(`Удалено сообщение в канале <#${message.channel.id}> пользователем ${user}`);
 });
 
 function clean(text) {
@@ -209,6 +233,25 @@ if (err) return message.reply("у Вас нету доступа для сове
   message.channel.send(text);
 }
 	
+	if(message.content === process.env.PREFIX + "russian") {
+    if (message.member.roles.has('473767322130317313')) {
+            message.member.removeRole('473767322130317313').catch();
+            message.delete();
+        } else {
+            message.member.addRole('473767322130317313').catch();
+            message.delete();
+        }
+}
+	if(message.content === process.env.PREFIX + "english") {
+    if (message.member.roles.has('473767413406498817')) {
+            message.member.removeRole('473767413406498817').catch();
+            message.delete();
+        } else {
+            message.member.addRole('473767413406498817').catch();
+            message.delete();
+        }
+}
+	
 	if(message.content === process.env.PREFIX + "help") {
     message.channel.send({embed: {
 	    title: `StoffyBOT`,
@@ -220,7 +263,7 @@ if (err) return message.reply("у Вас нету доступа для сове
 	if(message.content === process.env.PREFIX + "userhelp") {
     message.author.send({embed: {
 	    title: `StoffyBOT > Помощь по командам для обычного пользователя`,
-	    description: `Сорри, для вас нету команд.`
+	    description: `${process.env.PREFIX}russian > Выдаётся роль Russian\n${process.env.PREFIX}english > Выдаётся роль English`
 }
 });
 	}
